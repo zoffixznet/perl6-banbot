@@ -1,5 +1,5 @@
 use IRC::Client;
-.run with IRC::Client.new: :host<irc.freenode.net>, :channels<#perl6 #zofbot-ban>, :debug, :nick<p6bannerbot>,
+.run with IRC::Client.new: :host<irc.freenode.net>, :channels<#perl6>, :debug, :nick<p6bannerbot>,
 plugins =>
   class {
     method irc-privmsg-channel ($e where .Str.contains:
