@@ -1,0 +1,2 @@
+#!/bin/sh
+screen -L -S bannerbot perl6 bot.p6
