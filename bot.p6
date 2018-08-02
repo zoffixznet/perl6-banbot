@@ -7,15 +7,16 @@ my $nick = 'p6bannerbot';
 plugins =>
   class {
     multi method irc-join ($e where .nick ne $nick && .host.starts-with: 'gateway/web/') {
-        Promise.in(10).then: { $e.irc.send-cmd: 'MODE', $e.channel, '+v', $e.nick }
+        $e.irc.send-cmd: 'MODE', $e.channel, '+v', $e.nick;
         Nil
     }
 
     multi method irc-join ($e where .nick ne $nick) {
+        dd $e.host;
         Promise.in(1).then: {
-          $e.irc.send: :where($e.nick), :notice, text => qq{$e.nick(), Greetings! We're currently dealing with a massive spam attack and have to filter users who can connect. You will be allowed to talk in 10 seconds}
+          $e.irc.send: :where($e.nick), :notice, text => qq{$e.nick(), Greetings! We're currently dealing with a massive spam attack and have to filter users who can connect. You will be allowed to talk (given +v) in 15 seconds}
         }
-        Promise.in(10).then: { $e.irc.send-cmd: 'MODE', $e.channel, '+v', $e.nick }
+        Promise.in(15).then: { $e.irc.send-cmd: 'MODE', $e.channel, '+v', $e.nick }
         Nil
     }
 
