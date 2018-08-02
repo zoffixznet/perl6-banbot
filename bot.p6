@@ -1,5 +1,7 @@
 use IRC::Client;
 my $nick = 'p6bannerbot';
+my $l := Lock.new;
+my %seen is SetHash;
 .run with IRC::Client.new:
   |(:password('pass.txt'.IO.slurp.trim) if 'pass.txt'.IO.e),
   :host<irc.freenode.net>, :channels<#perl6  #perl6-dev  #perl6-toolchain  #moarvm>, :debug, :$nick,
@@ -12,8 +14,8 @@ plugins =>
     }
 
     multi method irc-join ($e where .nick ne $nick) {
-        dd $e.host;
-        Promise.in(1).then: {
+        %seen{$e.host} || Promise.in(1).then: {
+          $l.protect: { %seen{$e.host}++ }
           $e.irc.send: :where($e.nick), :notice, text => qq{$e.nick(), Greetings! We're currently dealing with a massive spam attack and have to filter users who can connect. You will be allowed to talk (given +v) in 15 seconds}
         }
         Promise.in(15).then: { $e.irc.send-cmd: 'MODE', $e.channel, '+v', $e.nick }
