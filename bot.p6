@@ -8,7 +8,7 @@ my %seen is SetHash;
   # :host<localhost>, :channels<#perl6-redirect>, :debug, :nick<p6bot>,
 plugins =>
   class {
-    multi method irc-join ($e where .nick ne $nick && .host.starts-with: 'gateway/web/' | 'perl6/') {
+    multi method irc-join ($e where .nick ne $nick && .host.contains: '/') {
         $e.irc.send-cmd: 'MODE', $e.channel, '+v', $e.nick;
         Nil
     }
