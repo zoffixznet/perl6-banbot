@@ -1,10 +1,11 @@
 use IRC::Client;
+my $nick = 'p6bannerbot';
 .run with IRC::Client.new:
-  :host<irc.freenode.net>, :channels<#perl6  #perl6-dev  #perl6-toolchain  #moarvm>, :debug, :nick<p6bannerbot>,
+  :host<irc.freenode.net>, :channels<#perl6  #perl6-dev  #perl6-toolchain  #moarvm>, :debug, :$nick,
   # :host<localhost>, :channels<#perl6-redirect>, :debug, :nick<p6bot>,
 plugins =>
   class {
-    multi method irc-join ($e where .host.starts-with: 'gateway/web/') {
+    multi method irc-join ($e where .nick ne $nick && .host.starts-with: 'gateway/web/') {
         Promise.in(10).then: { $e.irc.send-cmd: 'MODE', $e.channel, '+v', $e.nick }
         Nil
     }
