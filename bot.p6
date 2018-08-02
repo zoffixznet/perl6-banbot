@@ -1,6 +1,7 @@
 use IRC::Client;
 my $nick = 'p6bannerbot';
 .run with IRC::Client.new:
+  |(:password('pass.txt'.IO.slurp) if 'pass.txt'.IO.e),
   :host<irc.freenode.net>, :channels<#perl6  #perl6-dev  #perl6-toolchain  #moarvm>, :debug, :$nick,
   # :host<localhost>, :channels<#perl6-redirect>, :debug, :nick<p6bot>,
 plugins =>
