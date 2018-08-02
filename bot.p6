@@ -10,7 +10,7 @@ plugins =>
         Nil
     }
 
-    multi method irc-join ($e) {
+    multi method irc-join ($e where .nick ne $nick) {
         Promise.in(1).then: {
           $e.irc.send: :where($e.nick), :notice, text => qq{$e.nick(), Greetings! We're currently dealing with a massive spam attack and have to filter users who can connect. You will be allowed to talk in 10 seconds}
         }
