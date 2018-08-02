@@ -1,7 +1,7 @@
 use IRC::Client;
 .run with IRC::Client.new:
   # :host<irc.freenode.net>, :channels<#perl6>, :debug, :nick<p6bannerbot>,
-  :host<localhost>, :channels<#perl6>, :debug, :nick<p6bot>,
+  :host<localhost>, :channels<#perl6-redirect>, :debug, :nick<p6bot>,
 plugins =>
   class {
     method irc-join ($e) {
