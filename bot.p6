@@ -16,9 +16,9 @@ plugins =>
     multi method irc-join ($e where .nick ne $nick) {
         %seen{$e.host} || Promise.in(1).then: {
           $l.protect: { %seen{$e.host}++ }
-          $e.irc.send: :where($e.nick), :notice, text => qq{$e.nick(), Greetings! We're currently dealing with a massive spam attack and have to filter users who can connect. You will be allowed to talk (given +v) in 15 seconds}
+          $e.irc.send: :where($e.nick), :notice, text => qq{$e.nick(), Greetings! We're currently dealing with a massive spam attack and have to filter users who can connect. You will be allowed to talk (given +v) in 20 seconds}
         }
-        Promise.in(15).then: { $e.irc.send-cmd: 'MODE', $e.channel, '+v', $e.nick }
+        Promise.in(20).then: { $e.irc.send-cmd: 'MODE', $e.channel, '+v', $e.nick }
         Nil
     }
 
