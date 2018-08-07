@@ -4,11 +4,11 @@ my $l := Lock.new;
 my %seen is SetHash;
 .run with IRC::Client.new:
   |(:password('pass.txt'.IO.slurp.trim) if 'pass.txt'.IO.e),
-  :host<irc.freenode.net>, :channels<#perl6  #perl6-dev  #perl6-toolchain  #moarvm>, :debug, :$nick,
+  :host<irc.freenode.net>, :channels<#perl6  #perl6-dev  #perl6-toolchain  #moarvm  #zofbot>, :debug, :$nick,
   # :host<localhost>, :channels<#perl6-redirect>, :debug, :nick<p6bot>,
 plugins =>
   class {
-    multi method irc-join ($e where .nick ne $nick && .host.contains: '/') {
+    multi method irc-join ($e where .nick ne $nick && (.host.contains: '/' or .nick.starts-with: 'travis-ci')) {
         $e.irc.send-cmd: 'MODE', $e.channel, '+v', $e.nick;
         Nil
     }
