@@ -2,24 +2,38 @@ use IRC::Client;
 my $nick = 'p6bannerbot';
 my $l := Lock.new;
 my %seen is SetHash;
+my %wait-list;
+
 .run with IRC::Client.new:
   |(:password('pass.txt'.IO.slurp.trim) if 'pass.txt'.IO.e),
   :host<irc.freenode.net>, :channels<#perl6  #perl6-dev  #perl6-toolchain  #moarvm  #zofbot>, :debug, :$nick,
   # :host<localhost>, :channels<#perl6-redirect>, :debug, :nick<p6bot>,
 plugins =>
-  class {
+  class :: does IRC::Client::Plugin {
     multi method irc-join ($e where .nick ne $nick && (.host.contains: '/' or .nick.starts-with: 'travis-ci')) {
         $e.irc.send-cmd: 'MODE', $e.channel, '+v', $e.nick;
         Nil
     }
 
     multi method irc-join ($e where .nick ne $nick) {
+        $l.protect: { %wait-list{$e.nick} = now }
+
         %seen{$e.host} || Promise.in(1).then: {
           $l.protect: { %seen{$e.host}++ }
-          $e.irc.send: :where($e.nick), :notice, text => qq{$e.nick(), Greetings! We're currently dealing with a massive spam attack and have to filter users who can connect. You will be allowed to talk (given +v) in 40 seconds}
+          $e.irc.send: :where($e.nick), :notice, text => qq{$e.nick(), Greetings! We're currently dealing with a massive spam attack and have to filter users who can connect. You will be allowed to talk (given +v) in 45 seconds}
         }
-        Promise.in(40).then: { $e.irc.send-cmd: 'MODE', $e.channel, '+v', $e.nick }
+        Promise.in(45).then: {
+            $l.protect: {
+                now - 20 < %wait-list{$e.nick}
+                  and $e.irc.send-cmd: 'MODE', $e.channel, '+v', $e.nick;
+                %wait-list{$e.nick}:delete;
+            }
+        }
         Nil
+    }
+    multi method irc-privmsg-channel ($e) {
+        %wait-list{$e.nick} and $l.protect: { %wait-list{$e.nick} = now if %wait-list{$e.nick} }
+        $.NEXT
     }
 
 
