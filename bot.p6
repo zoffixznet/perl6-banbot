@@ -24,7 +24,7 @@ plugins =>
         }
         Promise.in(45).then: {
             $l.protect: {
-                now - 20 < %wait-list{$e.nick}
+                now - 20 > %wait-list{$e.nick}
                   and $e.irc.send-cmd: 'MODE', $e.channel, '+v', $e.nick;
                 %wait-list{$e.nick}:delete;
             }
