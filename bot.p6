@@ -20,7 +20,8 @@ plugins =>
 
         %seen{$e.host} || Promise.in(1).then: {
           $l.protect: { %seen{$e.host}++ }
-          $e.irc.send: :where($e.nick), :notice, text => qq{$e.nick(), Greetings! We're currently dealing with a massive spam attack and have to filter users who can connect. You will be allowed to talk (given +v) in 45 seconds}
+          $e.irc.send: :where($e.nick), :notice, text => qq{$e.nick(), Greetings! We're currently dealing with a massive spam attack and have to filter users who can connect. You will be allowed to talk (given +v) in 45 seconds. Please do not attempt to send messages into
+          the channel before that time expires.}
         }
         Promise.in(45).then: {
             $l.protect: {
