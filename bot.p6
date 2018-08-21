@@ -31,6 +31,12 @@ plugins =>
         }
         Nil
     }
+    
+    multi method irc-join ($e where .nick eq $nick) {
+        $e.irc.send-cmd: 'CS', 'op', $e.channel;
+        Nil
+    }
+    
     multi method irc-privmsg-channel ($e) {
         %wait-list{$e.nick} and $l.protect: { %wait-list{$e.nick} = now if %wait-list{$e.nick} }
         $.NEXT
