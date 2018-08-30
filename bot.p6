@@ -1,3 +1,5 @@
+#!/usr/bin/env perl6
+
 use IRC::Client;
 my $nick = 'p6bannerbot';
 my $l := Lock.new;
