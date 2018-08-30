@@ -35,7 +35,7 @@ plugins =>
     }
     
     multi method irc-join ($e where .nick eq $nick) {
-        $e.irc.send-cmd: 'CS', 'op', $e.channel;
+        $e.irc.send-cmd: "CS op {$e.channel}";
         Nil
     }
     
