@@ -13,7 +13,7 @@ my %wait-list;
 plugins =>
   class :: does IRC::Client::Plugin {
     multi method irc-join ($e where .nick ne $nick && (.nick.starts-with: 'travis-ci'
-          or .host.contains: '/'
+          or .host.contains: '/' # cloaks
               |'public-gprs202251.centertel.pl' # pmurias
       )) {
         $e.irc.send-cmd: 'MODE', $e.channel, '+v', $e.nick;
