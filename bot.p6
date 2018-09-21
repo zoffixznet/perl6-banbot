@@ -12,9 +12,8 @@ my %wait-list;
   # :host<localhost>, :channels<#perl6-redirect>, :debug, :nick<p6bot>,
 plugins =>
   class :: does IRC::Client::Plugin {
-    multi method irc-join ($e where .nick ne $nick && (.nick.starts-with: 'travis-ci'
+    multi method irc-join ($e where .nick ne $nick && (.nick.starts-with: 'travis-ci' | 'pmurias' | 'lizmat'
           or .host.contains: '/' # cloaks
-              |'public-gprs202251.centertel.pl' # pmurias
       )) {
         $e.irc.send-cmd: 'MODE', $e.channel, '+v', $e.nick;
         Nil
